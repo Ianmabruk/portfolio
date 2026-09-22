@@ -1,0 +1,135 @@
+.plans-page__hero {
+  padding: 6rem 2rem 4rem;
+  background: var(--color-vanilla);
+  text-align: center;
+}
+
+.plans-page__hero-inner {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.plans-page__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 1rem;
+}
+
+.plans-page__subtitle {
+  font-size: 1.125rem;
+  color: var(--color-gray);
+  line-height: 1.7;
+}
+
+.plans-page__grid {
+  padding: 5rem 2rem;
+}
+
+.plans-page__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.plan-detail-card {
+  padding: 2.5rem;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  position: relative;
+  transition: all 0.4s ease;
+}
+
+.plan-detail-card--featured {
+  border-color: var(--color-charcoal);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+}
+
+.plan-detail-card__badge {
+  position: absolute;
+  top: -12px;
+  right: 2rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 1rem;
+  background: var(--color-charcoal);
+  color: var(--color-white);
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.plan-detail-card__name {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.plan-detail-card__price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.plan-detail-card__amount {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.plan-detail-card__period {
+  font-size: 0.9375rem;
+  color: var(--color-gray);
+}
+
+.plan-detail-card__description {
+  font-size: 0.9375rem;
+  color: var(--color-gray);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.plan-detail-card__features {
+  margin-bottom: 2rem;
+}
+
+.plan-detail-card__features li {
+  font-size: 0.9375rem;
+  padding: 0.5rem 0;
+  color: var(--color-charcoal);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.plan-detail-card__features li:last-child {
+  border-bottom: none;
+}
+
+.plan-detail-card__cta {
+  width: 100%;
+  text-align: center;
+}
+
+@media (max-width: 1024px) {
+  .plans-page__inner {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .plans-page__hero {
+    padding: 4rem 1.25rem 3rem;
+  }
+  .plans-page__grid {
+    padding: 3rem 1.25rem;
+  }
+  .plans-page__inner {
+    grid-template-columns: 1fr;
+  }
+}

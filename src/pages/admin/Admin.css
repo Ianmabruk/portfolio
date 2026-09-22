@@ -1,0 +1,37 @@
+.admin-login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-vanilla);
+  padding: 2rem;
+}
+
+.admin-login__card {
+  width: 100%;
+  max-width: 400px;
+  padding: 3rem;
+  background: var(--color-white);
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+}
+
+.admin-login__title {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+
+.admin-login__subtitle {
+  font-size: 0.9375rem;
+  color: var(--color-gray);
+  margin-bottom: 2rem;
+}
+
+.admin-login__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
