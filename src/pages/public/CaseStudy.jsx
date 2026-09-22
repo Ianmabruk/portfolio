@@ -11,7 +11,7 @@ export default function CaseStudy() {
 
   useEffect(() => {
     publicApi.getPortfolio({}).then(res => {
-      const found = res.data.data.find(p => p.slug === slug)
+      const found = res.data?.data?.find(p => p.slug === slug)
       if (found) {
         setProject(found)
       }

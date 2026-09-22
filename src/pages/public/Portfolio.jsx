@@ -16,8 +16,8 @@ export default function Portfolio() {
           publicApi.getPortfolio({}),
           publicApi.getPortfolioCategories(),
         ])
-        setProjects(projectsRes.data.data)
-        setCategories(['All', ...categoriesRes.data.data])
+        if (projectsRes.data?.data) setProjects(projectsRes.data.data)
+        if (categoriesRes.data?.data) setCategories(['All', ...categoriesRes.data.data])
       } catch (error) {
         console.error('Failed to fetch portfolio:', error)
       }

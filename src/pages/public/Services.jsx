@@ -9,7 +9,9 @@ export default function Services() {
 
   useEffect(() => {
     publicApi.getServices()
-      .then(res => setServices(res.data.data))
+      .then(res => {
+        if (res.data?.data) setServices(res.data.data)
+      })
       .catch(console.error)
   }, [])
 

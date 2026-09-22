@@ -9,7 +9,9 @@ export default function Plans() {
 
   useEffect(() => {
     publicApi.getPlans()
-      .then(res => setPlans(res.data.data))
+      .then(res => {
+        if (res.data?.data) setPlans(res.data.data)
+      })
       .catch(console.error)
   }, [])
 
