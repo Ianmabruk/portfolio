@@ -1,6 +1,6 @@
 [[redirects]]
   from = "/api/*"
-  to = "https://your-backend.onrender.com/api/:splat"
+  to = "https://portfolio-backend-jwm1.onrender.com/api/:splat"
   status = 200
   force = true
 
