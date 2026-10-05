@@ -39,15 +39,15 @@ export default function HeroSection({ onContact }: HeroSectionProps) {
       </FadeIn>
 
       <div className="relative flex flex-1 items-center overflow-hidden">
-        <FadeIn delay={0.15} y={40} className="w-full">
+        <FadeIn delay={0.15} y={40} className="relative z-20 w-full">
           <div className="overflow-hidden">
-            <h1 className="hero-heading mt-6 w-full whitespace-nowrap text-[13.5vw] font-black uppercase leading-none tracking-tight sm:mt-4 md:-mt-5">
-              Hi, i&apos;m mabruk
+            <h1 className="hero-heading mt-6 w-full whitespace-nowrap text-[11vw] font-black uppercase leading-none tracking-tight sm:mt-4 md:-mt-5">
+              Hi, i&apos;m ian mabruk
             </h1>
           </div>
         </FadeIn>
 
-        <div className="pointer-events-none absolute inset-x-0 top-1/2 z-10 -translate-y-1/2 sm:bottom-0 sm:top-auto sm:translate-y-0">
+        <div className="pointer-events-none absolute inset-x-0 top-1/2 z-0 -translate-y-1/2 sm:bottom-0 sm:top-auto sm:translate-y-0">
           <FadeIn delay={0.6} y={30} className="pointer-events-auto flex justify-center">
             <Magnet
               padding={150}
@@ -57,7 +57,7 @@ export default function HeroSection({ onContact }: HeroSectionProps) {
             >
               <img
                 src={PORTRAIT_URL}
-                alt="Mabruk, 3D creator"
+                alt="Ian Mabruk, software developer"
                 className="w-[280px] select-none sm:w-[360px] md:w-[440px] lg:w-[520px]"
                 draggable={false}
               />
@@ -72,7 +72,7 @@ export default function HeroSection({ onContact }: HeroSectionProps) {
             className="max-w-[160px] font-light uppercase leading-snug tracking-wide text-[#D7E2EA] sm:max-w-[220px] md:max-w-[260px]"
             style={{ fontSize: 'clamp(0.75rem, 1.4vw, 1.5rem)' }}
           >
-            a 3d creator driven by crafting striking and unforgettable projects
+            a software developer turning every dream and thought into profitable, effortless tools for your everyday
           </p>
         </FadeIn>
 
