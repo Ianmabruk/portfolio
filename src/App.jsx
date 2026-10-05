@@ -1,15 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
-import Layout from './components/layout/Layout'
-import Home from './pages/public/Home'
-import Services from './pages/public/Services'
-import ServiceDetail from './pages/public/ServiceDetail'
-import Portfolio from './pages/public/Portfolio'
-import CaseStudy from './pages/public/CaseStudy'
-import About from './pages/public/About'
-import Plans from './pages/public/Plans'
-import Community from './pages/public/Community'
-import RequestService from './pages/public/RequestService'
-import Contact from './pages/public/Contact'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import AdminLogin from './pages/admin/AdminLogin'
 import AdminLayout from './components/admin/AdminLayout'
 import Dashboard from './pages/admin/Dashboard'
@@ -25,21 +14,12 @@ import AdminMedia from './pages/admin/AdminMedia'
 import AdminSettings from './pages/admin/AdminSettings'
 import AdminSocialLinks from './pages/admin/AdminSocialLinks'
 
+// This app is the admin dashboard only. The public portfolio is a separate
+// application in web/ and is served as its own site.
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
-        <Route path="services" element={<Services />} />
-        <Route path="services/:slug" element={<ServiceDetail />} />
-        <Route path="portfolio" element={<Portfolio />} />
-        <Route path="portfolio/:slug" element={<CaseStudy />} />
-        <Route path="about" element={<About />} />
-        <Route path="plans" element={<Plans />} />
-        <Route path="community" element={<Community />} />
-        <Route path="request-service" element={<RequestService />} />
-        <Route path="contact" element={<Contact />} />
-      </Route>
+      <Route path="/" element={<Navigate to="/admin/login" replace />} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Dashboard />} />
