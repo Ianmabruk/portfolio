@@ -57,53 +57,62 @@ export const adminApi = {
     const form = new FormData();
     Object.entries(data).forEach(([key, value]) => form.append(key, value));
     if (file) form.append('image', file);
-    return api.post('/admin/services', form, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return api.post('/services', form, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
   updateService: (id, data, file) => {
     const form = new FormData();
     Object.entries(data).forEach(([key, value]) => form.append(key, value));
     if (file) form.append('image', file);
-    return api.put(`/admin/services/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return api.put(`/services/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
-  deleteService: (id) => api.delete(`/admin/services/${id}`),
+  deleteService: (id) => api.delete(`/services/${id}`),
   getPortfolio: () => api.get('/admin/portfolio'),
   createProject: (data, file) => {
     const form = new FormData();
     Object.entries(data).forEach(([key, value]) => form.append(key, value));
     if (file) form.append('cover_image', file);
-    return api.post('/admin/portfolio', form, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return api.post('/portfolio', form, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
   updateProject: (id, data, file) => {
     const form = new FormData();
     Object.entries(data).forEach(([key, value]) => form.append(key, value));
     if (file) form.append('cover_image', file);
-    return api.put(`/admin/portfolio/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return api.put(`/portfolio/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
-  deleteProject: (id) => api.delete(`/admin/portfolio/${id}`),
+  deleteProject: (id) => api.delete(`/portfolio/${id}`),
+  addProjectImage: (id, data, file) => {
+    const form = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) form.append(key, value);
+    });
+    if (file) form.append('image', file);
+    return api.post(`/portfolio/${id}/images`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
+  },
+  deleteProjectImage: (id, imageId) => api.delete(`/portfolio/${id}/images/${imageId}`),
   getTestimonials: () => api.get('/admin/testimonials'),
   createTestimonial: (data, file) => {
     const form = new FormData();
     Object.entries(data).forEach(([key, value]) => form.append(key, value));
     if (file) form.append('image', file);
-    return api.post('/admin/testimonials', form, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return api.post('/testimonials', form, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
   updateTestimonial: (id, data, file) => {
     const form = new FormData();
     Object.entries(data).forEach(([key, value]) => form.append(key, value));
     if (file) form.append('image', file);
-    return api.put(`/admin/testimonials/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return api.put(`/testimonials/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
-  deleteTestimonial: (id) => api.delete(`/admin/testimonials/${id}`),
+  deleteTestimonial: (id) => api.delete(`/testimonials/${id}`),
   getPlans: () => api.get('/admin/plans'),
-  createPlan: (data) => api.post('/admin/plans', data),
-  updatePlan: (id, data) => api.put(`/admin/plans/${id}`, data),
-  deletePlan: (id) => api.delete(`/admin/plans/${id}`),
+  createPlan: (data) => api.post('/plans', data),
+  updatePlan: (id, data) => api.put(`/plans/${id}`, data),
+  deletePlan: (id) => api.delete(`/plans/${id}`),
   getCommunity: (params) => api.get('/admin/community', { params }),
-  updateCommunityStatus: (id, data) => api.put(`/admin/community/${id}/status`, data),
+  updateCommunityStatus: (id, data) => api.put(`/community/${id}/status`, data),
   getRequests: (params) => api.get('/admin/requests', { params }),
-  updateRequestStatus: (id, data) => api.put(`/admin/requests/${id}/status`, data),
+  updateRequestStatus: (id, data) => api.put(`/requests/${id}/status`, data),
   getInquiries: (params) => api.get('/admin/inquiries', { params }),
-  updateInquiryStatus: (id, data) => api.put(`/admin/inquiries/${id}/status`, data),
+  updateInquiryStatus: (id, data) => api.put(`/inquiries/${id}/status`, data),
   getMedia: (params) => api.get('/admin/media', { params }),
   uploadMedia: (file, altText, category) => {
     const form = new FormData();
@@ -116,10 +125,24 @@ export const adminApi = {
   getSettings: () => api.get('/admin/settings'),
   updateSettings: (data) => api.post('/admin/settings', data),
   getSocialLinks: () => api.get('/admin/social-links'),
-  createSocialLink: (data) => api.post('/admin/social-links', data),
-  updateSocialLink: (id, data) => api.put(`/admin/social-links/${id}`, data),
-  deleteSocialLink: (id) => api.delete(`/admin/social-links/${id}`),
+  createSocialLink: (data) => api.post('/social-links', data),
+  updateSocialLink: (id, data) => api.put(`/social-links/${id}`, data),
+  deleteSocialLink: (id) => api.delete(`/social-links/${id}`),
   getActivities: () => api.get('/admin/activities'),
 };
 
 export { UPLOADS_URL };
+
+/**
+ * Builds a display URL for a stored asset reference.
+ * The database stores public paths such as "/uploads/media/file.png", so the
+ * prefix is only applied when it is missing (e.g. a separate CDN host) to
+ * avoid producing "/uploads/uploads/...".
+ */
+export const assetUrl = (value) => {
+  if (!value) return '';
+  const path = String(value);
+  if (/^(https?:)?\/\//i.test(path) || path.startsWith('data:')) return path;
+  if (!UPLOADS_URL || path.startsWith(`${UPLOADS_URL}/`) || path === UPLOADS_URL) return path;
+  return `${UPLOADS_URL}${path.startsWith('/') ? '' : '/'}${path}`;
+};

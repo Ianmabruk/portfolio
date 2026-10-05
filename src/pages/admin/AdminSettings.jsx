@@ -32,12 +32,12 @@ export default function AdminSettings() {
     try {
       await Promise.all(
         Object.entries(settings).map(([key, value]) =>
-          adminApi.updateSettings({ key, value, type: 'text' })
+          adminApi.updateSettings({ key, value: value ?? '', type: 'text' })
         )
       )
       toast.success('Settings saved')
     } catch (error) {
-      toast.error('Failed to save settings')
+      toast.error(error.response?.data?.message || 'Unable to save settings. Please try again.')
     } finally {
       setSaving(false)
     }
@@ -103,6 +103,48 @@ export default function AdminSettings() {
           <div className="form-group">
             <label>Commitment</label>
             <input value={settings.stats_commitment || ''} onChange={e => handleChange('stats_commitment', e.target.value)} />
+          </div>
+        </div>
+
+        <div className="admin-settings__section">
+          <h2>About Me</h2>
+          <p className="admin-settings__hint">
+            These fields drive the About section and contact details on the public portfolio.
+          </p>
+          <div className="form-group">
+            <label>Name</label>
+            <input value={settings.about_name || ''} onChange={e => handleChange('about_name', e.target.value)} />
+          </div>
+          <div className="form-group">
+            <label>Professional Title</label>
+            <input
+              value={settings.about_title || ''}
+              onChange={e => handleChange('about_title', e.target.value)}
+            />
+          </div>
+          <div className="form-group">
+            <label>Biography</label>
+            <textarea
+              rows={5}
+              value={settings.about_bio || ''}
+              onChange={e => handleChange('about_bio', e.target.value)}
+            />
+          </div>
+          <div className="form-group">
+            <label>Skills (comma separated)</label>
+            <input
+              value={settings.about_skills || ''}
+              onChange={e => handleChange('about_skills', e.target.value)}
+            />
+          </div>
+          <div className="form-group">
+            <label>Profile Image URL</label>
+            <input
+              type="url"
+              placeholder="https://... or /uploads/media/..."
+              value={settings.about_image || ''}
+              onChange={e => handleChange('about_image', e.target.value)}
+            />
           </div>
         </div>
 

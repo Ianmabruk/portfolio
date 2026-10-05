@@ -60,3 +60,10 @@
 .admin-settings .btn {
   align-self: flex-start;
 }
+
+.admin-settings__hint {
+  margin: 0 0 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  opacity: 0.65;
+}

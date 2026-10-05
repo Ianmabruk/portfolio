@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { adminApi } from '../../services/api'
+import { adminApi, assetUrl } from '../../services/api'
 import toast from 'react-hot-toast'
 import { Plus, Pencil, Trash2, X } from 'lucide-react'
 import './AdminCRUD.css'
@@ -13,10 +13,15 @@ export default function AdminPortfolio() {
   const [form, setForm] = useState({
     title: '', slug: '', client: '', category: '', description: '',
     challenge: '', solution: '', process: '', technologies: '',
-    results: '', testimonial: '', year: '', project_url: '',
-    featured: false, active: true, ordering: 0
+    results: '', testimonial: '', year: '', project_url: '', github_url: '',
+    status: 'live', featured: false, active: true, ordering: 0
   })
   const [file, setFile] = useState(null)
+  const [coverPreview, setCoverPreview] = useState(null)
+  const [images, setImages] = useState([])
+  const [imageFiles, setImageFiles] = useState([])
+  const [deletingImage, setDeletingImage] = useState(null)
+  const [editingCover, setEditingCover] = useState(null)
 
   const fetchProjects = async () => {
     setLoading(true)
@@ -37,10 +42,14 @@ export default function AdminPortfolio() {
     setForm({
       title: '', slug: '', client: '', category: '', description: '',
       challenge: '', solution: '', process: '', technologies: '',
-      results: '', testimonial: '', year: '', project_url: '',
-      featured: false, active: true, ordering: 0
+      results: '', testimonial: '', year: '', project_url: '', github_url: '',
+      status: 'live', featured: false, active: true, ordering: 0
     })
     setFile(null)
+    setCoverPreview(null)
+    setImages([])
+    setImageFiles([])
+    setEditingCover(null)
     setShowModal(true)
   }
 
@@ -53,10 +62,15 @@ export default function AdminPortfolio() {
       process: project.process || '', technologies: project.technologies || '',
       results: project.results || '', testimonial: project.testimonial || '',
       year: project.year || '', project_url: project.project_url || '',
+      github_url: project.github_url || '', status: project.status || 'live',
       featured: !!project.featured, active: !!project.active,
       ordering: project.ordering || 0
     })
+    setImages(project.images || [])
+    setEditingCover(project.cover_image || null)
     setFile(null)
+    setCoverPreview(null)
+    setImageFiles([])
     setShowModal(true)
   }
 
@@ -65,26 +79,68 @@ export default function AdminPortfolio() {
     try {
       if (editing) {
         await adminApi.updateProject(editing, form, file)
+        if (imageFiles.length) await uploadGalleryImages(editing)
         toast.success('Project updated')
       } else {
-        await adminApi.createProject(form, file)
+        const res = await adminApi.createProject(form, file)
+        const newId = res.data?.data?.id
+        if (newId && imageFiles.length) await uploadGalleryImages(newId)
         toast.success('Project created')
       }
       setShowModal(false)
       fetchProjects()
     } catch (error) {
-      toast.error('Something went wrong')
+      const message = error.response?.data?.message
+      toast.error(message || 'Unable to save project. Please try again.')
+    }
+  }
+
+  const handleCoverChange = (e) => {
+    const selected = e.target.files[0]
+    setFile(selected)
+    setCoverPreview(selected ? URL.createObjectURL(selected) : null)
+  }
+
+  const handleGalleryChange = (e) => {
+    const selected = Array.from(e.target.files || [])
+    if (!selected.length) return
+    const tooLarge = selected.find(f => f.size > 10 * 1024 * 1024)
+    if (tooLarge) {
+      toast.error('Images must be smaller than 10MB')
+      e.target.value = ''
+      return
+    }
+    setImageFiles(prev => [...prev, ...selected])
+  }
+
+  const uploadGalleryImages = async (projectId) => {
+    for (const imageFile of imageFiles) {
+      await adminApi.addProjectImage(projectId, { alt_text: '' }, imageFile)
+    }
+    setImageFiles([])
+  }
+
+  const removeImage = async (projectId, imageId) => {
+    try {
+      await adminApi.deleteProjectImage(projectId, imageId)
+      setImages(prev => prev.filter(img => img.id !== imageId))
+      toast.success('Image removed')
+    } catch (error) {
+      toast.error('Unable to remove image. Please try again.')
     }
   }
 
   const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this project?')) return
+    const confirmed = window.confirm(
+      'Delete Project?\n\nDeleting this project will remove it from the portfolio, including its images. This action cannot be undone.'
+    )
+    if (!confirmed) return
     try {
       await adminApi.deleteProject(id)
       toast.success('Project deleted')
       fetchProjects()
     } catch (error) {
-      toast.error('Failed to delete')
+      toast.error('Unable to delete project. Please try again.')
     }
   }
 
@@ -184,9 +240,108 @@ export default function AdminPortfolio() {
                 <textarea value={form.results} onChange={e => setForm({ ...form, results: e.target.value })} />
               </div>
               <div className="form-group">
+                <label>Year</label>
+                <input
+                  type="number"
+                  value={form.year}
+                  onChange={e => setForm({ ...form, year: e.target.value })}
+                />
+              </div>
+              <div className="form-group">
+                <label>Process</label>
+                <input value={form.process} onChange={e => setForm({ ...form, process: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Testimonial</label>
+                <textarea value={form.testimonial} onChange={e => setForm({ ...form, testimonial: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label>Live Project URL</label>
+                <input
+                  type="url"
+                  placeholder="https://example.com"
+                  value={form.project_url}
+                  onChange={e => setForm({ ...form, project_url: e.target.value })}
+                />
+                <small className="form-hint">Used by the "Live Project" button on the portfolio.</small>
+              </div>
+              <div className="form-group">
+                <label>GitHub URL</label>
+                <input
+                  type="url"
+                  placeholder="https://github.com/you/project"
+                  value={form.github_url}
+                  onChange={e => setForm({ ...form, github_url: e.target.value })}
+                />
+              </div>
+              <div className="form-group">
+                <label>Status</label>
+                <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
+                  <option value="live">Live</option>
+                  <option value="draft">Draft</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Display Order</label>
+                <input
+                  type="number"
+                  value={form.ordering}
+                  onChange={e => setForm({ ...form, ordering: e.target.value })}
+                />
+              </div>
+              <div className="form-group">
                 <label>Cover Image</label>
-                <input type="file" accept="image/*" onChange={e => setFile(e.target.files[0])} />
-                {form.project_url && <img src={form.project_url} alt="" className="admin-modal__preview" />}
+                <input type="file" accept="image/*" onChange={handleCoverChange} />
+                {coverPreview && <img src={coverPreview} alt="Cover preview" className="admin-modal__preview" />}
+                {!coverPreview && editingCover && (
+                  <img src={assetUrl(editingCover)} alt="Current cover" className="admin-modal__preview" />
+                )}
+              </div>
+              <div className="form-group">
+                <label>Gallery Images</label>
+                <input type="file" accept="image/*" multiple onChange={handleGalleryChange} />
+
+                {imageFiles.length > 0 && (
+                  <div className="admin-gallery__grid">
+                    {imageFiles.map((f, i) => (
+                      <div key={`${f.name}-${i}`} className="admin-gallery__item">
+                        <img src={URL.createObjectURL(f)} alt={f.name} />
+                        <button
+                          type="button"
+                          className="action-btn action-btn--delete"
+                          aria-label={`Remove ${f.name}`}
+                          onClick={() => setImageFiles(prev => prev.filter((_, idx) => idx !== i))}
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {images.length > 0 && (
+                  <div className="admin-gallery__grid">
+                    {images.map(image => (
+                      <div key={image.id} className="admin-gallery__item">
+                        <img src={assetUrl(image.image_url)} alt={image.alt_text || ''} />
+                        <button
+                          type="button"
+                          className="action-btn action-btn--delete"
+                          aria-label="Remove image"
+                          disabled={deletingImage === image.id}
+                          onClick={() => removeImage(editing, image.id)}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <small className="form-hint">
+                  Images are saved with the project. Max 10MB per image.
+                </small>
               </div>
               <div className="form-group">
                 <label>
