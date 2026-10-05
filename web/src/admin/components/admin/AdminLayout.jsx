@@ -12,7 +12,7 @@ import './AdminLayout.css'
 
 const navItems = [
   { path: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { path: '/admin/home', label: 'Home', icon: Home },
+  { path: '/admin/about', label: 'About Me', icon: Home },
   { path: '/admin/services', label: 'Services', icon: Briefcase },
   { path: '/admin/portfolio', label: 'Projects', icon: FileText },
   { path: '/admin/community', label: 'Community', icon: Users },

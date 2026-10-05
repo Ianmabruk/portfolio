@@ -3,6 +3,24 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Admin Dashboard Colors - Clean, Professional, Light Theme */
+    --color-white: #ffffff;
+    --color-charcoal: #111827;
+    --color-vanilla: #f9fafb;
+    --color-vanilla-dark: #f3f4f6;
+    --color-border: #e5e7eb;
+    --color-gray: #6b7280;
+    --color-gray-light: #9ca3af;
+    --color-gray-dark: #374151;
+    --color-error: #dc2626;
+    --color-error-bg: #fef2f2;
+    --color-success: #16a34a;
+    --color-success-bg: #f0fdf4;
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
   html,
   body,
   #root {
@@ -26,4 +44,24 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+
+  /* Admin Dashboard Base Styles */
+  .admin-login,
+  .admin-layout {
+    font-family: var(--font-display);
+  }
+}
+
+/* Spinner utility */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-charcoal);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

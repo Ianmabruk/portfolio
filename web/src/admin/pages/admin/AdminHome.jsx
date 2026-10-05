@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import './AdminHome.css'
 
-export default function AdminHome() {
+export default function AdminAboutMe() {
   const navigate = useNavigate()
   const [settings, setSettings] = useState({})
   const [loading, setLoading] = useState(true)
@@ -38,7 +38,7 @@ export default function AdminHome() {
           adminApi.updateSettings({ key, value, type: 'text' })
         )
       )
-      toast.success('Home settings saved')
+      toast.success('About Me settings saved')
     } catch (error) {
       toast.error('Failed to save settings')
     } finally {
@@ -57,24 +57,24 @@ export default function AdminHome() {
   return (
     <div className="admin-home">
       <div className="admin-home__header">
-        <h1>Home</h1>
-        <p className="admin-home__subtitle">Manage homepage content and settings</p>
+        <h1>About Me</h1>
+        <p className="admin-home__subtitle">Manage your profile, bio, and site settings</p>
       </div>
 
       <form onSubmit={handleSubmit} className="admin-home__form">
         <div className="admin-home__section">
-          <h2>Hero</h2>
+          <h2>Profile</h2>
           <div className="form-group">
-            <label>Eyebrow</label>
+            <label>Name</label>
             <input value={settings.hero_eyebrow || ''} onChange={e => handleChange('hero_eyebrow', e.target.value)} />
           </div>
           <div className="form-group">
-            <label>Heading</label>
+            <label>Headline</label>
             <input value={settings.hero_heading || ''} onChange={e => handleChange('hero_heading', e.target.value)} />
           </div>
           <div className="form-group">
-            <label>Description</label>
-            <textarea value={settings.hero_description || ''} onChange={e => handleChange('hero_description', e.target.value)} />
+            <label>Bio / Description</label>
+            <textarea value={settings.hero_description || ''} onChange={e => handleChange('hero_description', e.target.value)} rows={4} />
           </div>
         </div>
 
@@ -82,7 +82,7 @@ export default function AdminHome() {
           <h2>Contact</h2>
           <div className="form-group">
             <label>Contact Email</label>
-            <input value={settings.contact_email || ''} onChange={e => handleChange('contact_email', e.target.value)} />
+            <input type="email" value={settings.contact_email || ''} onChange={e => handleChange('contact_email', e.target.value)} />
           </div>
           <div className="form-group">
             <label>Contact Phone</label>
@@ -118,12 +118,12 @@ export default function AdminHome() {
           </div>
           <div className="form-group">
             <label>Site Description</label>
-            <textarea value={settings.site_description || ''} onChange={e => handleChange('site_description', e.target.value)} />
+            <textarea value={settings.site_description || ''} onChange={e => handleChange('site_description', e.target.value)} rows={3} />
           </div>
         </div>
 
         <button type="submit" className="btn btn--primary" disabled={saving}>
-          {saving ? 'Saving...' : 'Save Home Settings'}
+          {saving ? 'Saving...' : 'Save About Me'}
         </button>
       </form>
     </div>
