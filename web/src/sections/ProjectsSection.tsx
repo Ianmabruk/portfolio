@@ -39,7 +39,7 @@ function ProjectCard({ project, index, totalCards }: ProjectCardProps) {
   const scale = useTransform(scrollYProgress, [0, 1], [1, targetScale]);
 
   const liveUrl = resolveExternalUrl(project.project_url);
-  const gallery = [...project.images]
+  const gallery = (project.images ?? [])
     .sort((a, b) => a.ordering - b.ordering || a.id - b.id)
     .map((image) => resolveAssetUrl(image.image_url))
     .filter(Boolean);
