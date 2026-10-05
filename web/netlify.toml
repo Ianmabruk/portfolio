@@ -1,0 +1,36 @@
+# Netlify configuration for the public portfolio (web/).
+#
+# netlify.toml is only read from a site's base directory, so the root
+# netlify.toml cannot configure this app. Point a Netlify site at this
+# directory (Site settings -> Build & deploy -> Base directory: web). The
+# command and publish directory below are relative to this base directory.
+#
+# The repository root builds the admin dashboard and the existing site, so it
+# must stay a separate Netlify site.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Same backend as the root site, so both read and write one database.
+[[redirects]]
+  from = "/api/*"
+  to = "https://portfolio-backend-jwm1.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+# Single page app: every other path falls back to the entry document.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
